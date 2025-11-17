@@ -18,7 +18,7 @@ export const getSoilMoistureLogsByDeviceId = async (deviceId) => {
   // kalkulasi moist_value ke persentase
   const logs = await findAllSoilMoistureLogsByDeviceId(deviceId);
   return logs.map((log) => {
-    let percent = ((log.moist_value - wetThreshold) * 100) / (dryThreshold - wetThreshold);
+    let percent = ((dryThreshold - log.moist_value) * 100) / (dryThreshold - wetThreshold);
     if (percent < 0) percent = 0;
     if (percent > 100) percent = 100;
     return {

@@ -1,19 +1,20 @@
-import mqtt from 'mqtt';
+import mqttClient from '../libs/mqttClient.js';
 import { createNewWaterCapacityLog } from './waterCapacityLog.service.js';
 import { createNewSoilMoistureLog } from './soilMoistureLog.service.js';
+import { createNewLightIntensityLog } from './lightIntensityLog.service.js';
 
-const mqttServer = process.env.MQTT_BROKER_URL || 'mqtt://localhost:1883';
-const client = mqtt.connect(mqttServer);
+// const mqttServer = process.env.MQTT_BROKER_URL || 'mqtt://localhost:1883';
+// const client = mqtt.connect(mqttServer);
 
-client.on('connect', () => {
-  console.log('Connected to MQTT broker');
-  client.subscribe('devices/+/+', { qos: 1 }, (err) => {
-    if (err) console.error('Subscribe error', err);
-    else console.log('Subscribed to all devices');
-  });
-});
+// client.on('connect', () => {
+//   console.log('Connected to MQTT broker');
+//   client.subscribe('devices/+/+', { qos: 1 }, (err) => {
+//     if (err) console.error('Subscribe error', err);
+//     else console.log('Subscribed to all devices');
+//   });
+// });
 
-client.on('message', async (topic, message) => {
+mqttClient.on('message', async (topic, message) => {
   const payload = message.toString();
 
   console.log('---------------------------------');
@@ -31,10 +32,14 @@ client.on('message', async (topic, message) => {
   try {
     switch (sensorType) {
       case 'ultrasonic':
-        await createNewWaterCapacityLog({ device_id, distance: parseInt(payload) });
+        const distance = parseFloat(payload);
+        await createNewWaterCapacityLog({ device_id, distance });
         break;
       case 'soil':
         await createNewSoilMoistureLog({ device_id, moist_value: parseInt(payload) });
+        break;
+      case 'light':
+        await createNewLightIntensityLog({ device_id, light_value: parseFloat(payload) });
         break;
       default:
         console.log(`Unknown sensor type: ${sensorType}`);
@@ -44,4 +49,4 @@ client.on('message', async (topic, message) => {
   }
 });
 
-export default client;
+export default mqttClient;
