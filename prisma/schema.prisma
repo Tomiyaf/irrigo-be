@@ -20,7 +20,7 @@ model soil_moisture_logs {
   id          Int       @id @default(autoincrement())
   device_id   Int
   moist_value Int
-  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
   devices     devices   @relation(fields: [device_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_soil_device_id")
 }
 
@@ -34,7 +34,7 @@ model water_capacity_logs {
   container_id      Int              @default(autoincrement())
   current_height_cm Decimal          @db.Decimal(5, 2)
   current_litres    Decimal          @db.Decimal(6, 2)
-  created_at        DateTime?        @default(now()) @db.Timestamp(6)
+  created_at        DateTime?        @default(now()) @db.Timestamptz(6)
   water_containers  water_containers @relation(fields: [container_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_capacity_container_id")
 
   @@id([id, container_id])
@@ -61,7 +61,7 @@ model watering_logs {
   device_id   Int
   duration_ms Int
   manual      Boolean   @default(false)
-  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
   devices     devices   @relation(fields: [device_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_watering_device_id")
 }
 
@@ -69,6 +69,6 @@ model light_intensity_logs {
   id         Int       @id @default(autoincrement())
   device_id  Int
   lux        Decimal   @db.Decimal(6, 2)
-  created_at DateTime? @default(now()) @db.Timestamp(6)
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
   devices    devices   @relation(fields: [device_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_light_device_id")
 }
