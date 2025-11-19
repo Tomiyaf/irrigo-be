@@ -39,13 +39,17 @@ export const createNewWaterCapacityLog = async (data) => {
     current_litres: currLitres,
   };
 
+  const log = await createWaterCapacityLog(container.id, WaterCapacityData);
+
   broadcast({
     type: 'water_capacity_log',
+    id: log.id,
     device_id: data.device_id,
+    container_id: container.id,
     current_height_cm: currHeightCm,
     current_litres: currLitres,
     timestamp: new Date(),
   });
 
-  return await createWaterCapacityLog(container.id, WaterCapacityData);
+  return log;
 };

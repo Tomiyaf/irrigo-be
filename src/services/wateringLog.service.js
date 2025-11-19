@@ -3,6 +3,7 @@ import {
   createWateringLog,
 } from '../repositories/wateringLog.repository.js';
 import { findDeviceById } from '../repositories/device.repository.js';
+import broadcast from '../libs/broadcast.js';
 
 export const getWateringLogsByDeviceId = async (deviceId) => {
   const device = await findDeviceById(deviceId);
@@ -21,12 +22,16 @@ export const createNewWateringLog = async (value) => {
     error.status = 404;
     throw error;
   }
+
+  const log = await createWateringLog(value);
   broadcast({
     type: 'watering_log',
+    id: log.id,
     device_id: value.device_id,
     manual: value.manual,
     duration_ms: value.duration_ms,
     timestamp: new Date(),
   });
-  return await createWateringLog(value);
+
+  return log;
 };

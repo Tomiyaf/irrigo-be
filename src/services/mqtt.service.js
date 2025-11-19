@@ -2,7 +2,7 @@ import mqttClient from '../libs/mqttClient.js';
 import { createNewWaterCapacityLog } from './waterCapacityLog.service.js';
 import { createNewSoilMoistureLog } from './soilMoistureLog.service.js';
 import { createNewLightIntensityLog } from './lightIntensityLog.service.js';
-import { createWateringLog } from '../repositories/wateringLog.repository.js';
+import { createNewWateringLog } from './wateringLog.service.js';
 
 // const mqttServer = process.env.MQTT_BROKER_URL || 'mqtt://localhost:1883';
 // const client = mqtt.connect(mqttServer);
@@ -44,7 +44,7 @@ mqttClient.on('message', async (topic, message) => {
         break;
       case 'watering':
         // payload is JSON string like {"manual":true,"duration_ms":5000}
-        await createWateringLog({ device_id, ...JSON.parse(payload) });
+        await createNewWateringLog({ device_id, ...JSON.parse(payload) });
         break;
       default:
         console.log(`Unknown sensor type: ${sensorType}`);

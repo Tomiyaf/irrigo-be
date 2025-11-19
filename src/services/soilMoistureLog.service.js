@@ -35,12 +35,14 @@ export const createNewSoilMoistureLog = async (value) => {
   //     error.status = 404;
   //     throw error;
   //   }
+  const log = await createSoilMoistureLog(value);
   const percent = ((value.moist_value - wetThreshold) * 100) / (dryThreshold - wetThreshold);
   broadcast({
     type: 'soil_moisture_log',
+    id: log.id,
     device_id: value.device_id,
     moisture_percentage: percent,
     timestamp: new Date(),
   });
-  return await createSoilMoistureLog(value);
+  return log;
 };

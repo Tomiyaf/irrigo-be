@@ -34,14 +34,16 @@ export const createNewLightIntensityLog = async (value) => {
     error.status = 400;
     throw error;
   }
+  const log = await createLightIntensityLog(value);
 
   broadcast({
     type: 'light_intensity_log',
+    id: log.id,
     device_id: value.device_id,
     lux: value.light_value,
     status: status,
     timestamp: new Date(),
   });
 
-  return await createLightIntensityLog(value);
+  return log;
 };
